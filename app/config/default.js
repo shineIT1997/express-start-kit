@@ -7,7 +7,7 @@ config = {
   name: Pack.name,
   sessionKey: '6ketaq3cgSDffg878fgo315rk9',
   db: {
-    uri: 'mongodb://127.0.0.1:27017/db_tk_test'
+    uri: 'mongodb://127.0.0.1:27017/db_express_start_kit'
   },
   cookieOptions: {
     ttl: 24 * 60 * 60 * 1000, // expires a day from today
@@ -17,10 +17,6 @@ config = {
     clearInvalid: false, // remove invalid cookies
     strictHeader: true, // don't allow violations of RFC 6265
     path: '/' // set the cookie for all routes
-  },
-  security: {
-    ratelimiterSeconds: 10,
-    ratelimiterMaxRequest: 10
   },
   date: {
     format: 'MMM DD, YYYY'
@@ -57,25 +53,12 @@ config = {
     path: process.cwd() + '/public/files',
     bookCover: process.cwd() + '/public/files/bookCover'
   },
-  uploadMaxBytes: 104857600, // 100MB
+  uploadMaxSize: 104857600, // 100MB
   connection: {
-    port: process.env.CMS_ADMIN_PORT || 3001,
-    router: {
-      isCaseSensitive: false,
-      stripTrailingSlash: true
-    },
-    routes: {
-      cors: {
-        origin: ['*'],
-        credentials: true
-      }
-    // auth: {
-    //   scope: ['admin']
-    // }
-    }
+    port: 3001
   },
   jwt: {
-    secret: process.env.JWT_SECRET_CMS || 'jKErFl345ghLoPrlafasTHdfgDsdf0werr'
+    secret: 'jKErFl345ghLoPrlafasTHdfgDsdf0werr'
   },
   context: {
     apiPrefix: '/api'

@@ -15,7 +15,7 @@ global.BASE_MODEL = path.join(__dirname, '/app/models')
 global.BASE_UTIL = path.join(__dirname, '/app/utils')
 global.BASE_VIEW = path.join(__dirname, '/app/views')
 
-// Config first
+// config first
 process.env.NODE_CONFIG_DIR = path.join(__dirname, '/app/config')
 global.CONFIG = require('config')
 

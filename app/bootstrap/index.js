@@ -23,7 +23,7 @@ for (let key of Object.keys(dirs)) {
 }
 
 module.exports = async app => {
-  // step by step - careful
+  // step by step
 
   // mongoDB
   await require('../lib/mongo')()
