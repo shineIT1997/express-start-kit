@@ -66,19 +66,11 @@ module.exports = async app => {
   app.use(bodyParser.urlencoded({ extended: true }))
 
   // support cookie
-  app.use(cookieParser(config.get('sessionKey')))
+  app.use(cookieParser(config.get('session.secret')))
 
   // session and flash
   app.set('trust proxy', 1) // trust first proxy
-  app.use(session({
-    secret: config.get('sessionKey'),
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false, // true on https
-      maxAge: 24 * 60 * 60 * 7
-    }
-  }))
+  app.use(session(config.get('session')))
   app.use(flash())
 
   // setup passportjs

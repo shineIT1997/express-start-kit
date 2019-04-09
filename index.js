@@ -5,10 +5,10 @@ require('babel-core/register')
 require('babel-polyfill')
 require('module-alias/register')
 
+const os = require('os')
 const path = require('path')
 const express = require('express')
 const app = express()
-const os = require('os')
 
 global.BASE_PATH = __dirname
 global.BASE_MODEL = path.join(__dirname, '/app/models')

@@ -5,7 +5,15 @@ const Pack = require(global.BASE_PATH + '/package')
 
 config = {
   name: Pack.name,
-  sessionKey: '6ketaq3cgSDffg878fgo315rk9',
+  session: {
+    secret: '6ketaq3cgSDffg878fgo315rk9',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // true on https
+      maxAge: 24 * 60 * 60 * 7
+    }
+  },
   db: {
     uri: 'mongodb://127.0.0.1:27017/db_express_start_kit'
   },
