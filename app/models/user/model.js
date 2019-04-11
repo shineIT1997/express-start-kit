@@ -8,7 +8,7 @@
 /**
 * Module dependencies.
 */
-import bcrypt from 'bcrypt-nodejs'
+import bcrypt from 'bcrypt'
 import mongoose, { Schema } from 'mongoose'
 import { schema, options } from './schema'
 

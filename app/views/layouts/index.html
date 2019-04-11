@@ -40,5 +40,8 @@
     <div id="main" class="{% block mainclass %}{% endblock %}">{% block main %}{% endblock %}</div>
     {% include "./footer.html" %}
   </div>
+
+  {% include "../partial/facebook.html" %}
+  {% block script %}{% endblock %}
 </body>
 </html>

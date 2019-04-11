@@ -34,7 +34,10 @@ module.exports = app => {
       return res.boom.notFound()
     }
 
-    res.redirect('/404')
+    // res.redirect('/404')
+    res.render('errors/404', {
+      error: req.flash('error')
+    })
   })
 
   // Handle error
@@ -55,6 +58,11 @@ module.exports = app => {
     }
 
     req.flash('errors', error)
-    res.status(500).redirect('/500')
+    res
+      .status(500)
+      // .redirect('/500')
+      .render('errors/500', {
+        error: req.flash('error')
+      })
   })
 }

@@ -41,11 +41,11 @@ const login = async (req, res) => {
       throw new Error('User not found.')
     }
 
-    let token = await Auth.login(payload.password, user, payload.remember)
-    res.cookie('token', token)
-
+    let { token, expires } = await Auth.login(payload.password, user, payload.remember)
+    res.cookie('token', token, { expires })
     delete user.password
-    return res.send(Object.assign(user, { token }))
+
+    return res.send(Object.assign(user, { token, expires }))
   } catch (error) {
     return res.boom.badRequest(error)
   }
@@ -59,7 +59,7 @@ const login = async (req, res) => {
  */
 const logout = async (req, res) => {
   try {
-    await Auth.logout(req.auth.id)
+    // await Auth.logout(req.auth.id)
     res.clearCookie('token')
     res.send({ success: true })
   } catch (error) {

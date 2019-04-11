@@ -1,4 +1,5 @@
 {% extends "../layouts/index.html" %}
+
 {% block main %}
 <div class="col-6 offset-3">
   <form method="POST" action="login" autocomplete="off">
@@ -39,5 +40,25 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
+
+  {% set fbCallback = 'onlogin' %}
+  {% include "../partial/facebook-auth.html" %}
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function onlogin({ status, authResponse }) {
+    console.log({ status, authResponse })
+    FB.api(
+      '/' + authResponse.userID,
+      {
+        fields: 'id,email,birthday,gender,first_name,last_name,middle_name,name,name_format,picture,short_name',
+      },
+      function(response) {
+        console.log(response)
+      }
+    )
+  }
+</script>
 {% endblock %}

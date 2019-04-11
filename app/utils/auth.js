@@ -4,29 +4,10 @@
 * User: Danh Le / danh.danh20051995@gmail.com
 * Date: 2019-01-18 17:39:15
 */
-import _ from 'lodash'
 import JWT from 'jsonwebtoken'
-import aguid from 'aguid'
-import crypto from 'crypto'
 import Bcrypt from 'bcrypt'
 
-const SALT_LENGTH = 9
-const redis = global.REDIS
 const config = global.CONFIG
-
-/**
- * Random string
- * @param {Number} length
- * @return {String}
- */
-const randomString = (length = 20) => crypto.randomBytes(length).toString('hex')
-
-/**
- * Generate hash from password
- * @param {String} password
- * @return {Promise}
- */
-const generateHash = password => Bcrypt.hash(password, SALT_LENGTH)
 
 /**
  * Compare password with hash string
@@ -47,75 +28,20 @@ const compare = (plainPassword, hashPassword) => {
 
 /**
  * Generate JWT token
- * @param {Object} session
+ * @param {Object} user
  * @retunr {String}
  */
-const createJwtToken = session => {
-  const secret = config.get('jwt.secret')
-  let jwtToken = JWT.sign({
-    id: session.id,
-    exp: new Date().getTime() + session.exp
-  }, secret)
-  return jwtToken
-}
-
-/**
- * Generate session information
- * @param {Object} user
- * @param {Boolean} remember
- * @return {Promise}
- */
-const createSession = (user, remember) => {
-  let cmsName = config.get('name')
-  let userSession = {}
-  let defaultSession = {
-    valid: true,
-    id: cmsName + ':Users:' + aguid(), // a random session id,
-    uid: '', // user id
-    type: 'guest',
-    clientIp: user.clientIp,
-    scope: [ 'guest' ],
-    exp: (remember ? 7 : 1) * config.get('cookieOptions.ttl')
+const createJwtToken = (user, remember) => {
+  let exp = config.get('cookieOptions.ttl') * (remember ? 7 : 1) + new Date().getTime()
+  return {
+    expires: new Date(exp),
+    token: JWT.sign({
+      exp: Math.floor(exp / 1000), // https://www.npmjs.com/package/jsonwebtoken#token-expiration-exp-claim
+      id: user._id,
+      _id: user._id,
+      email: user.email
+    }, config.get('jwt.secret'))
   }
-
-  if (user) {
-    /* Set custom session */
-    userSession = {
-      uid: user._id ? String(user._id) : '',
-      type: 'user',
-      username: user.username,
-      scope: user.roles
-    }
-  }
-
-  return Promise.resolve(_.merge(defaultSession, userSession))
-}
-
-/**
- * Save session information to redis
- * @param {Object} session
- * @return {Object}
- */
-const saveSession = (session, ...options) => {
-  redis.set(session.id, JSON.stringify(session), ...options)
-  return session
-}
-
-/**
- * Set expire for invalid key
- * @param {String} redisKey
- */
-const invalidSession = redisKey => {
-  return redis.getAsync(redisKey)
-    .then(result => {
-      let session = result ? JSON.parse(result) : {}
-      if (!session.id) {
-        return Promise.reject(new Error('Invalid session data'))
-      }
-      session.valid = false
-      session.ended = new Date().getTime()
-      return saveSession(session, 'EX', 2)
-    })
 }
 
 /**
@@ -127,29 +53,15 @@ const invalidSession = redisKey => {
  */
 const login = (password, user, remember) => {
   return compare(password, user.password)
-    .then(valid => {
-      return createSession(user, remember)
-    })
-    .then(session => {
-      return saveSession(session, 'EX', session.exp / 1000)
-    })
-    .then(session => {
-      return createJwtToken(session)
-    })
+    .then(valid => createJwtToken(user, remember))
 }
 
 /**
- * User logout
- * @param {String} redisKey
- */
-const logout = sessionId => invalidSession(sessionId)
-
-/**
  * Route auth valid
- * @param {String} type
+ * @param {String} role
  * @return {Promise}
  */
-const valid = type => {
+const valid = role => {
   let authFail = (req, res, next) => {
     if (req.baseUrl === '/api') {
       return res.boom.unauthorized()
@@ -158,7 +70,7 @@ const valid = type => {
   }
 
   return async (req, res, next) => {
-    switch (type) {
+    switch (role) {
       case 'guest':
         if (req.auth) {
           return res.redirect('/')
@@ -176,12 +88,7 @@ const valid = type => {
 }
 
 export default {
-  randomString,
-  generateHash,
   compare,
-  saveSession,
-  invalidSession,
   login,
-  logout,
   valid
 }

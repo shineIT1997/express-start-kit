@@ -42,5 +42,25 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
+
+  {% set fbCallback = 'onregister' %}
+  {% include "../partial/facebook-auth.html" %}
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function onregister({ status, authResponse }) {
+    console.log({ status, authResponse })
+    FB.api(
+      '/' + authResponse.userID,
+      {
+        fields: 'id,email,birthday,gender,first_name,last_name,middle_name,name,name_format,picture,short_name',
+      },
+      function(response) {
+        console.log(response)
+      }
+    )
+  }
+</script>
 {% endblock %}

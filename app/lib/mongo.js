@@ -8,8 +8,32 @@ import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate'
 
 module.exports = async () => {
-  await mongoose.connect(global.CONFIG.get('db.uri'), { useNewUrlParser: true })
   mongoose.set('useCreateIndex', true)
   mongoose.plugin(mongoosePaginate)
-  console.log('Register Mongo:', global.CONFIG.get('db.uri'))
+
+  mongoose.connection.on('connecting', () => {
+    console.info('Connecting to MongoDB...')
+  })
+
+  mongoose.connection.on('reconnected', () => {
+    console.info('MongoDB reconnected!')
+  })
+
+  mongoose.connection.on('error', (error) => {
+    console.error(`MongoDB connection error: ${error}`)
+    mongoose.disconnect()
+  })
+
+  mongoose.connection.on('disconnected', () => {
+    console.error(`MongoDB disconnected! Reconnecting in ${5000 / 1000}s...`)
+    setTimeout(connect, 5000)
+  })
+
+  function connect () {
+    mongoose.connect(global.CONFIG.get('db.uri'), {
+      useNewUrlParser: true
+    })
+  }
+
+  connect()
 }

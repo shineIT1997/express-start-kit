@@ -7,7 +7,6 @@
 
 ## Setup and run express
 ```
-cd api
 npm i
 node index.js
 ```

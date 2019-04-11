@@ -42,8 +42,8 @@ const postLogin = async (req, res) => {
       throw new Error('User not found.')
     }
 
-    let jwtToken = await Auth.login(payload.password, user, payload.remember)
-    res.cookie('token', jwtToken)
+    let { token, expires } = await Auth.login(payload.password, user, payload.remember)
+    res.cookie('token', token, { expires })
     res.redirect('/')
   } catch (error) {
     req.flash('oldLogin', {
@@ -109,7 +109,7 @@ const postRegister = async (req, res) => {
  */
 const logout = async (req, res) => {
   try {
-    await Auth.logout(req.auth.id)
+    // await Auth.logout(req.auth.id)
     res.clearCookie('token')
     res.redirect('/')
   } catch (error) {

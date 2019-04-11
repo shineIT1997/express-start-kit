@@ -9,9 +9,10 @@ config = {
     secret: '6ketaq3cgSDffg878fgo315rk9',
     resave: false,
     saveUninitialized: true,
+    maxAge: 24 * 60 * 60 * 1000, // expires a day from today
     cookie: {
       secure: false, // true on https
-      maxAge: 24 * 60 * 60 * 7
+      maxAge: 24 * 60 * 60 * 1000 // expires a day from today
     }
   },
   db: {
@@ -69,7 +70,18 @@ config = {
     secret: 'jKErFl345ghLoPrlafasTHdfgDsdf0werr'
   },
   context: {
-    apiPrefix: '/api'
+    apiPrefix: '/api',
+    adminPrefix: '/admin',
+    mobilePrefix: '/mobile'
+  },
+  social: {
+    facebook: {
+      lang: 'en_US',
+      version: 'v3.2',
+      appId: '0123456789'
+    },
+    google: {},
+    twitter: {}
   }
 }
 

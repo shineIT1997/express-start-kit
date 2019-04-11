@@ -25,17 +25,17 @@ for (let key of Object.keys(dirs)) {
 module.exports = async app => {
   // step by step
 
+  // redis
+  require('../lib/redis')()
+
   // mongoDB
-  await require('../lib/mongo')()
+  require('../lib/mongo')()
 
   // autoload models
   let models = Glob.sync(global.BASE_PATH + '/app/models/*/model*.js', {})
   for (let model of models) {
     require(Path.resolve(model))
   }
-
-  // redis
-  await require('../lib/redis')()
 
   // boom response
   app.use(boom())
@@ -44,9 +44,9 @@ module.exports = async app => {
   app.use('/files', express.static('public/files'))
   app.use('/api/files', express.static('public/files'))
 
-  // setup view-engine and filters
+  // setup view-engine and views global, filter
   app.set('view engine', 'html')
-  require(Path.join(global.BASE_UTIL, 'filters'))(nunjucks.configure(global.BASE_VIEW, {
+  require(Path.join(global.BASE_UTIL, 'views'))(nunjucks.configure(global.BASE_VIEW, {
     express: app,
     autoescape: true,
     watch: true,
@@ -72,11 +72,6 @@ module.exports = async app => {
   app.set('trust proxy', 1) // trust first proxy
   app.use(session(config.get('session')))
   app.use(flash())
-
-  // setup passportjs
-  // const passport = require('../lib/passport')
-  // app.use(passport.initialize())
-  // app.use(passport.session())
 
   // load middlewares
   let middlewares = Glob.sync(global.BASE_PATH + `/app/middlewares/*.js`, {})

@@ -4,8 +4,9 @@
 * User: Danh Le / danh.danh20051995@gmail.com
 * Date: 2019-01-18 17:37:54
 */
-import JWT from 'jsonwebtoken'
-const redis = global.REDIS
+import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
+const User = mongoose.model('User')
 const config = global.CONFIG
 
 module.exports = async (req, res, next) => {
@@ -14,15 +15,14 @@ module.exports = async (req, res, next) => {
   if (jwtToken) {
     try {
       let secret = config.get('jwt.secret')
-      let decoded = JWT.verify(jwtToken, secret)
-      let auth = await redis.getAsync(decoded.id)
-      try {
-        auth = JSON.parse(auth)
-        req.auth = auth
-        res.locals.auth = auth
-      } catch (error) {}
+      let { _id } = jwt.verify(jwtToken, secret)
+      let user = await User.findOne({ _id })
+      if (user) {
+        req.auth = user
+        res.locals.auth = user
+      }
     } catch (error) {
-      console.log('JWT: ', error)
+      console.log('jwt: ', error)
     }
   }
 

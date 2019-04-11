@@ -4,13 +4,13 @@
 /node_modules
 /public
 
-## Backend
 # Ignore config files
 app/config/development.js
 app/config/production.js
 app/config/staging.js
 
 # misc
+.vscode
 .DS_Store
 .env.local
 .env.development.local
