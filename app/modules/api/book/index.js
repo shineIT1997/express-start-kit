@@ -21,9 +21,9 @@ router.get('/books', Controller.getItems)
 
 router.get('/books/:_id', [ Auth.valid('user') ], Controller.getItem)
 
-router.put('/books/:_id', [ Auth.valid('user'), upload.single('cover'), Middleware.moveFile, validate(Validate.update) ], Controller.update)
+router.put('/books/:_id', [ Auth.valid('user'), upload.single('cover'), Middleware.moveFile(), validate(Validate.update) ], Controller.update)
 
-router.post('/books', [ Auth.valid('user'), upload.single('cover'), Middleware.moveFile, validate(Validate.store) ], Controller.store)
+router.post('/books', [ Auth.valid('user'), upload.single('cover'), Middleware.moveFile(), validate(Validate.store) ], Controller.store)
 
 router.put('/books/:_id/status', [ Auth.valid('user'), validate(Validate.status) ], Controller.update)
 

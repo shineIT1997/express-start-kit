@@ -109,7 +109,7 @@ const copyAsync = (filePath, copyFilePath, replace = false) => {
 
 const ensureDirExists = directory => {
   return !directory
-    .replace(process.cwd(), '')
+    .replace(global.BASE_PATH, '')
     .split(/\\|\//)
     .reduce(({ fullPath, notEnsure }, part, index, paths) => {
       if (part) {
@@ -119,7 +119,7 @@ const ensureDirExists = directory => {
         fullPath,
         notEnsure: !fs.existsSync(fullPath) && fs.mkdirSync(fullPath)
       }
-    }, { fullPath: process.cwd(), notEnsure: false })
+    }, { fullPath: global.BASE_PATH, notEnsure: false })
     .notEnsure
 }
 

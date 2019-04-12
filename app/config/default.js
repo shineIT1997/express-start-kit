@@ -58,10 +58,12 @@ config = {
     }
   },
   upload: {
-    commander: process.cwd() + '/app/commander',
-    path: process.cwd() + '/public/files',
-    bookCover: process.cwd() + '/public/files/bookCover'
+    commander: global.BASE_PATH + '/app/commander',
+    path: global.BASE_PATH + '/public/files',
+    tmp: global.BASE_PATH + '/public/files/tmp',
+    bookCover: global.BASE_PATH + '/public/files/bookCover'
   },
+  uploadTypes: [ 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'docx', 'csv', 'pptx', 'xlsx', 'mp3', 'mp4', 'webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'drc', 'gifv', 'mng', 'avi', 'mov', 'qt', 'wmv', 'yuv', 'rm', 'rmvb', 'asf', 'amv', 'm4p', 'm4v', 'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'svi', '3gp', '3g2', 'mxf', 'roq', 'nsv', 'f4v', 'f4p', 'f4a', 'f4b' ],
   uploadMaxSize: 104857600, // 100MB
   connection: {
     port: 3001
